@@ -2,12 +2,14 @@ package examples.typing.tasks;
 
 import examples.typing.handler.CharacterEventHandler;
 import examples.typing.listener.CharacterListener;
-import examples.typing.source.CharacterGenerator;
+import examples.typing.source.CharacterProvider;
 import examples.typing.source.CharacterSource;
 
 import java.util.Random;
 
-public class RandomCharacterGenerator extends Thread implements CharacterSource, CharacterGenerator {
+public class RandomCharacterGenerator extends Thread implements CharacterSource, CharacterProvider {
+
+    private volatile boolean done = false;
 
     private static char[] chars;
     private static final String typingSymbols = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -41,7 +43,7 @@ public class RandomCharacterGenerator extends Thread implements CharacterSource,
 
     @Override
     public void run() {
-        while (true) {
+        while (!done) {
             nextCharacter();
 
             try {
@@ -50,6 +52,10 @@ public class RandomCharacterGenerator extends Thread implements CharacterSource,
                 return;
             }
         }
+    }
+
+    public void setDone() {
+        done = true;
     }
 
     private int getPauseTime() {

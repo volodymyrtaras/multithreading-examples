@@ -10,6 +10,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -22,6 +24,7 @@ public class SwingTypeTester extends JFrame implements CharacterSource {
     private CharacterDisplayCanvas feedbackCanvas;
     private JButton quitButton;
     private JButton startButton;
+    private JButton stopButton;
     private CharacterEventHandler handler;
 
     public SwingTypeTester() {
@@ -29,25 +32,17 @@ public class SwingTypeTester extends JFrame implements CharacterSource {
     }
 
     private void initComponents() {
-        handler = new CharacterEventHandler();
-        displayCanvas = new CharacterDisplayCanvas();
-        feedbackCanvas = new CharacterDisplayCanvas(this);
-        quitButton = new JButton();
-        startButton = new JButton();
-        add(displayCanvas, BorderLayout.NORTH);
-        add(feedbackCanvas, BorderLayout.CENTER);
-        JPanel panel = new JPanel();
-        quitButton.setText("Quit");
-        startButton.setText("Start");
-        panel.add(quitButton);
-        panel.add(startButton);
-        add(panel, BorderLayout.SOUTH);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent event) {
                 quit();
             }
         });
+        handler = new CharacterEventHandler();
+        displayCanvas = new CharacterDisplayCanvas();
+        add(displayCanvas, BorderLayout.NORTH);
+        feedbackCanvas = new CharacterDisplayCanvas(this);
+        add(feedbackCanvas, BorderLayout.CENTER);
         feedbackCanvas.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent event) {
@@ -57,14 +52,32 @@ public class SwingTypeTester extends JFrame implements CharacterSource {
                 }
             }
         });
+        JPanel panel = new JPanel();
+        add(panel, BorderLayout.SOUTH);
+        startButton = new JButton();
+        startButton.setText("Start");
+        panel.add(startButton);
         startButton.addActionListener(event -> {
             producer = new RandomCharacterGenerator();
             displayCanvas.setCharacterSource(producer);
             producer.start();
             startButton.setEnabled(false);
+            stopButton.setEnabled(true);
             feedbackCanvas.setEnabled(true);
             feedbackCanvas.requestFocus();
         });
+        stopButton = new JButton();
+        stopButton.setText("Stop");
+        panel.add(stopButton);
+        stopButton.addActionListener(event -> {
+            startButton.setEnabled(true);
+            stopButton.setEnabled(false);
+            producer.setDone();
+            feedbackCanvas.setEnabled(false);
+        });
+        quitButton = new JButton();
+        quitButton.setText("Quit");
+        panel.add(quitButton);
         quitButton.addActionListener(event -> quit());
         pack();
     }

@@ -1,6 +1,6 @@
 package examples.typing.source;
 
-public interface CharacterGenerator {
+public interface CharacterProvider {
 
     void nextCharacter();
 }
