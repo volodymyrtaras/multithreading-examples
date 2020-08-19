@@ -6,12 +6,8 @@ import examples.typing.listener.CharacterListener;
 import examples.typing.source.CharacterSource;
 import examples.typing.tasks.RandomCharacterGenerator;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -72,7 +68,7 @@ public class SwingTypeTester extends JFrame implements CharacterSource {
         stopButton.addActionListener(event -> {
             startButton.setEnabled(true);
             stopButton.setEnabled(false);
-            producer.setDone();
+            producer.interrupt();
             feedbackCanvas.setEnabled(false);
         });
         quitButton = new JButton();

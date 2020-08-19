@@ -9,8 +9,6 @@ import java.util.Random;
 
 public class RandomCharacterGenerator extends Thread implements CharacterSource, CharacterProvider {
 
-    private volatile boolean done = false;
-
     private static char[] chars;
     private static final String typingSymbols = "abcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -43,19 +41,15 @@ public class RandomCharacterGenerator extends Thread implements CharacterSource,
 
     @Override
     public void run() {
-        while (!done) {
+        while (!isInterrupted()) {
             nextCharacter();
 
             try {
                 Thread.sleep(getPauseTime());
             } catch (InterruptedException e) {
-                return;
+                break;
             }
         }
-    }
-
-    public void setDone() {
-        done = true;
     }
 
     private int getPauseTime() {
